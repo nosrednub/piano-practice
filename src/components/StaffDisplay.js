@@ -4,7 +4,8 @@ import { useEffect, useRef } from 'react';
 import { Factory, Voice, Formatter } from 'vexflow';
 import { jazzScales, keySignatures, noteStrings } from '../data/scales';
 
-export default function StaffDisplay({ selectedScale, selectedKey, selectedOctaves }) {
+export default function StaffDisplay(props) {
+  const { selectedScale, selectedKey, selectedOctaves, detectedNotes } = props;
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -75,7 +76,11 @@ export default function StaffDisplay({ selectedScale, selectedKey, selectedOctav
       const vexflowNotes = allNotes.map(midiNote => {
         // Get the note name in the correct format for VexFlow
         const noteName = midiToNoteName(midiNote, key.name);
-        return vf.StaveNote({ keys: [noteName], duration: 'q' });
+        const vfNote = vf.StaveNote({ keys: [noteName], duration: 'q' });
+        if (detectedNotes && detectedNotes.includes(midiNote)) {
+          vfNote.setStyle({ fillStyle: 'red', strokeStyle: 'red' });
+        }
+        return vfNote;
       });
 
       // Create a voice and add notes to it
@@ -94,7 +99,7 @@ export default function StaffDisplay({ selectedScale, selectedKey, selectedOctav
     } catch (error) {
       console.error('Error rendering staff:', error);
     }
-  }, [selectedScale, selectedKey, selectedOctaves]);
+  }, [selectedScale, selectedKey, selectedOctaves, detectedNotes]);
 
   return (
     <div 

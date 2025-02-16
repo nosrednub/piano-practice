@@ -6,6 +6,7 @@ import KeySelector from '../components/KeySelector';
 import StaffDisplay from '../components/StaffDisplay';
 import OctaveSelector from '../components/OctaveSelector';
 import PracticeSession from '../components/PracticeSession';
+import MidiInputHandler from '../components/MidiInputHandler';
 import SessionList from '../components/SessionList';
 import { getSessions } from '../data/practiceSessions';
 
@@ -93,6 +94,17 @@ export default function Home() {
                 selectedOctaves={selectedOctaves}
               />
             </div>
+            <MidiInputHandler>
+              {({ detectedNotes }) => (
+                <StaffDisplay
+                  selectedScale={selectedScale}
+                  selectedKey={selectedKey}
+                  selectedOctaves={selectedOctaves}
+                  detectedNotes={detectedNotes}
+                />
+              )}
+            </MidiInputHandler>
+
           </div>
 
           <PracticeSession
