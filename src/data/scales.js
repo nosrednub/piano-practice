@@ -8,7 +8,7 @@ export const jazzScales = [
   },
   {
     id: 'dorian',
-    name: 'Dorian Mode',
+    name: 'Minor/Dorian Mode',
     description: 'Minor scale with a raised 6th, common in modal jazz.',
     intervals: [0, 2, 3, 5, 7, 9, 10, 12], // Whole, Half, Whole, Whole, Whole, Half, Whole
     keyOffset: 2 // Starts on the second degree (e.g., D in C major)
@@ -61,9 +61,9 @@ export const jazzScales = [
 export const keySignatures = [
   { id: 'C', name: 'C', transpose: 0, midiBase: 60 }, // Middle C
   { id: 'F', name: 'F', transpose: 5, midiBase: 65 }, // F above middle C
-  { id: 'Bb', name: 'B♭', transpose: 10, midiBase: 58 }, // B♭ below middle C
+  { id: 'Bb', name: 'B♭', transpose: 10, midiBase: 59 }, // B♭ below middle C
   { id: 'Eb', name: 'E♭', transpose: 3, midiBase: 63 }, // E♭ above middle C
-  { id: 'Ab', name: 'A♭', transpose: 8, midiBase: 56 }, // A♭ below middle C
+  { id: 'Ab', name: 'A♭', transpose: 8, midiBase: 57 }, // A♭ below middle C
   { id: 'Db', name: 'D♭', transpose: 1, midiBase: 61 }, // D♭ above middle C
   { id: 'Gb', name: 'G♭', transpose: 6, midiBase: 54 }, // G♭ below middle C
   { id: 'B', name: 'B', transpose: 11, midiBase: 59 }, // B below middle C

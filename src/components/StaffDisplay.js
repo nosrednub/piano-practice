@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { Factory, Voice, Formatter } from 'vexflow';
-import { jazzScales, keySignatures } from '../data/scales';
+import { jazzScales, keySignatures, noteStrings } from '../data/scales';
 
 export default function StaffDisplay({ selectedScale, selectedKey, selectedOctaves }) {
   const containerRef = useRef(null);
@@ -26,6 +26,7 @@ export default function StaffDisplay({ selectedScale, selectedKey, selectedOctav
       const context = vf.getContext();
       const stave = vf.Stave({ x: 10, y: 40, width: 750 })
         .addClef('treble')
+        .addTimeSignature('4/4')
         .addKeySignature(selectedKey);
 
       // Get the selected scale and key information
@@ -73,7 +74,7 @@ export default function StaffDisplay({ selectedScale, selectedKey, selectedOctav
       // Convert MIDI notes to VexFlow notes
       const vexflowNotes = allNotes.map(midiNote => {
         // Get the note name in the correct format for VexFlow
-        const noteName = midiToNoteName(midiNote);
+        const noteName = midiToNoteName(midiNote, key.name);
         return vf.StaveNote({ keys: [noteName], duration: 'q' });
       });
 
@@ -105,9 +106,21 @@ export default function StaffDisplay({ selectedScale, selectedKey, selectedOctav
 }
 
 // Helper function to convert MIDI note numbers to note names
-function midiToNoteName(midi) {
-  const noteNames = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b'];
-  const note = noteNames[midi % 12];
+function midiToNoteName(midi, keySignature = 'C') {
+  // Define both sharp and flat note names
+  const sharpNoteNames = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b'];
+  const flatNoteNames = ['c', 'db', 'd', 'eb', 'e', 'f', 'gb', 'g', 'ab', 'a', 'bb', 'b'];
+
+  // Define key signatures that use flats
+  const flatKeys = ['F', 'B♭', 'E♭', 'A♭', 'D♭', 'G♭', 'C♭'];
+  
+  // Calculate the note index and octave
+  const noteIndex = midi % 12;
   const octave = Math.floor(midi / 12) - 1;
+
+  // Choose whether to use sharp or flat notes based on key signature
+  const noteNames = flatKeys.includes(keySignature) ? flatNoteNames : sharpNoteNames;
+  const note = noteNames[noteIndex];
+
   return `${note}/${octave}`;
 }

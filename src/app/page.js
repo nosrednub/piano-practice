@@ -10,25 +10,34 @@ import SessionList from '../components/SessionList';
 import { getSessions } from '../data/practiceSessions';
 
 export default function Home() {
+  // Initialize with default values
   const [selectedScale, setSelectedScale] = useState('major');
   const [selectedKey, setSelectedKey] = useState('C');
   const [selectedOctaves, setSelectedOctaves] = useState(4);
   const [sessions, setSessions] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load preferences and sessions from localStorage on mount
+  // Load preferences once on mount
   useEffect(() => {
     const savedScale = localStorage.getItem('selectedScale');
     const savedKey = localStorage.getItem('selectedKey');
     const savedOctaves = localStorage.getItem('selectedOctaves');
     const savedSessions = getSessions();
     
+    let updates = {};
+    if (savedScale) updates.scale = savedScale;
+    if (savedKey) updates.key = savedKey;
+    if (savedOctaves) updates.octaves = Number(savedOctaves);
+    
+    // Batch updates together
     if (savedScale) setSelectedScale(savedScale);
     if (savedKey) setSelectedKey(savedKey);
     if (savedOctaves) setSelectedOctaves(Number(savedOctaves));
     setSessions(savedSessions);
+    setIsLoaded(true);
   }, []);
 
-  // Save preferences to localStorage when changed
+  // Event handlers
   const handleScaleChange = (scale) => {
     setSelectedScale(scale);
     localStorage.setItem('selectedScale', scale);
@@ -44,10 +53,14 @@ export default function Home() {
     localStorage.setItem('selectedOctaves', octaves.toString());
   };
 
-  // Handle practice session updates
   const handleSessionsUpdate = (updatedSessions) => {
     setSessions(updatedSessions);
   };
+
+  // Don't render until client-side hydration is complete
+  if (!isLoaded) {
+    return <div className="min-h-screen bg-gray-50 dark:bg-gray-900" />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -57,7 +70,6 @@ export default function Home() {
         </h1>
         
         <div className="max-w-4xl mx-auto">
-          {/* Scale Selection and Staff Display */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <ScaleSelector 
@@ -83,7 +95,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Practice Session Recording */}
           <PracticeSession
             selectedScale={selectedScale}
             selectedKey={selectedKey}
@@ -91,7 +102,6 @@ export default function Home() {
             onSessionSaved={handleSessionsUpdate}
           />
 
-          {/* Practice History */}
           <SessionList
             sessions={sessions}
             onSessionsUpdate={handleSessionsUpdate}
