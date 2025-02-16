@@ -1,6 +1,13 @@
 'use client';
 
-export default function OctaveSelector({ selectedOctaves, onOctavesChange }) {
+import React from 'react';
+
+interface OctaveSelectorProps {
+  selectedOctaves: number;
+  onOctavesChange: (octaves: number) => void;
+}
+
+export default function OctaveSelector({ selectedOctaves, onOctavesChange }: OctaveSelectorProps) {
   return (
     <div className="mb-4">
       <label htmlFor="octave-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

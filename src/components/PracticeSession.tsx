@@ -1,13 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { defaultDurations, generateDefaultDescription, saveSession } from '../data/practiceSessions';
 
-export default function PracticeSession({ selectedScale, selectedKey, selectedOctaves, onSessionSaved }) {
-  const [duration, setDuration] = useState(15); // Default to 15 minutes
-  const [customDuration, setCustomDuration] = useState('');
-  const [description, setDescription] = useState('');
-  const [isCustomDuration, setIsCustomDuration] = useState(false);
+interface PracticeSessionProps {
+  selectedScale: string;
+  selectedKey: string;
+  selectedOctaves: number;
+  onSessionSaved?: (sessions: any[]) => void; // Type more specifically if possible
+}
+
+export default function PracticeSession({ selectedScale, selectedKey, selectedOctaves, onSessionSaved }: PracticeSessionProps) {
+  const [duration, setDuration] = useState<number>(15); // Default to 15 minutes
+  const [customDuration, setCustomDuration] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [isCustomDuration, setIsCustomDuration] = useState<boolean>(false);
 
   // Generate default description when props change
   useEffect(() => {

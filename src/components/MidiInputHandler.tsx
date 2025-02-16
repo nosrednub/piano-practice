@@ -1,12 +1,20 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import MidiService from '../services/MidiService';
 
-const MidiInputHandler = () => {
-  const [midiService, setMidiService] = useState(null);
-  const [midiInputs, setMidiInputs] = useState([]);
-  const [selectedInputId, setSelectedInputId] = useState('');
-  const [detectedNotes, setDetectedNotes] = useState([]);
+interface MidiMessageHandlerProps {
+  detectedNotes: string[];
+}
+
+interface MidiInputHandlerProps {
+  children: (props: MidiMessageHandlerProps) => React.ReactNode;
+}
+
+const MidiInputHandler: React.FC<MidiInputHandlerProps> = ({ children }) => {
+  const [midiService, setMidiService] = useState<MidiService | null>(null);
+  const [midiInputs, setMidiInputs] = useState<any[]>([]); // Type more specifically if possible
+  const [selectedInputId, setSelectedInputId] = useState<string>('');
+  const [detectedNotes, setDetectedNotes] = useState<string[]>([]);
 
   useEffect(() => {
     const initializeMidi = async () => {
@@ -35,7 +43,7 @@ const MidiInputHandler = () => {
     }
   }, [midiService, selectedInputId]);
 
-  const handleMidiMessage = (message) => {
+  const handleMidiMessage = useCallback((message: any) => { // Type 'message' more specifically
     if (message.type === 'noteon') {
       setDetectedNotes((prevNotes) => {
         const newNotes = [...prevNotes, message.note];
@@ -44,9 +52,9 @@ const MidiInputHandler = () => {
     } else if (message.type === 'noteoff') {
       setDetectedNotes((prevNotes) => prevNotes.filter(note => note !== message.note));
     }
-  };
+  }, []);
 
-  const handleInputSelect = (event) => {
+  const handleInputSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedInputId(event.target.value);
   };
 
@@ -73,6 +81,7 @@ const MidiInputHandler = () => {
           ))}
         </ul>
       </div>
+      {children({ detectedNotes })}
     </div>
   );
 };

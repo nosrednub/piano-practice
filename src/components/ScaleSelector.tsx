@@ -1,8 +1,14 @@
 'use client';
 
+import React from 'react';
 import { jazzScales } from '../data/scales';
 
-export default function ScaleSelector({ selectedScale, onScaleChange }) {
+interface ScaleSelectorProps {
+  selectedScale: string;
+  onScaleChange: (scale: string) => void;
+}
+
+export default function ScaleSelector({ selectedScale, onScaleChange }: ScaleSelectorProps) {
   return (
     <div className="mb-4">
       <label htmlFor="scale-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
