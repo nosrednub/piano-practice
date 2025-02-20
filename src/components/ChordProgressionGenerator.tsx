@@ -25,6 +25,7 @@ interface ChordProgressions {
 
   const handleProgressionTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setProgressionType(event.target.value as keyof ChordProgressions);
+    handleGenerateProgression();
   };
 
   const handleTempoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,7 +114,7 @@ interface ChordProgressions {
       
       <div>
         <h3>Chord Progression:</h3>
-        <p>{chordProgression.join(' | ')}</p>
+        {/* <p>{chordProgression.join(' | ')}</p> */}
       </div>
       {/* UI elements will be added here */}
     </>
