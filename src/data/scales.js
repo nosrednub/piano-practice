@@ -4,7 +4,7 @@ export const jazzScales = [
     name: 'Major Scale',
     description: 'The foundation of Western music, used extensively in jazz.',
     intervals: [0, 2, 4, 5, 7, 9, 11, 12], // Whole, Whole, Half, Whole, Whole, Whole, Half
-    keyOffset: 0 // Starts on the key note (e.g., C in C major)
+    keyOffset: 0 // Starts on the key note (e.g., C in C major yep)
   },
   {
     id: 'dorian',
