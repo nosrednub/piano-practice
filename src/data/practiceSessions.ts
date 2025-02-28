@@ -26,8 +26,7 @@ export interface PracticeSession {
 
 // Helper function to generate a default description
 export function generateDefaultDescription(scale: string, key: string, octaves: number): string {
-  const baseDescription = defaultDescriptions[scale as keyof typeof defaultDescriptions] || "Practice scale patterns";
-  return `${baseDescription} in ${key} through ${octaves} octaves`;
+  return `Practice ${scale} scale in ${key} key through ${octaves} octaves.`;
 }
 
 // Session storage key

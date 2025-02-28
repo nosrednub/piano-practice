@@ -18,23 +18,16 @@ const SessionList: React.FC<SessionListProps> = ({ sessions, onSessionsUpdate })
   };
 
   const handleSaveEdit = () => {
-    if (!editingSession) return;
-
-    const updatedSessions = updateSession(editingSession.id, {
-      ...editingSession,
-      description: editDescription
-    });
-
-    onSessionsUpdate(updatedSessions);
-    setEditingSession(null);
-    setEditDescription('');
+    if (editingSession) {
+      const updatedSessions = updateSession(editingSession.id, { description: editDescription });
+      onSessionsUpdate(updatedSessions);
+      setEditingSession(null);
+    }
   };
 
   const handleDelete = (sessionId: string) => {
-    if (window.confirm('Are you sure you want to delete this practice session?')) {
-      const updatedSessions = deleteSession(sessionId);
-      onSessionsUpdate(updatedSessions);
-    }
+    const updatedSessions = deleteSession(sessionId);
+    onSessionsUpdate(updatedSessions);
   };
 
   const formatDate = (dateString: string) => {

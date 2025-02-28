@@ -1,22 +1,21 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { defaultDurations, generateDefaultDescription, saveSession } from '../data/practiceSessions';
+import { saveSession, generateDefaultDescription, PracticeSession as PracticeSessionType } from '../data/practiceSessions';
 
 interface PracticeSessionProps {
   selectedScale: string;
   selectedKey: string;
   selectedOctaves: number;
-  onSessionSaved?: (sessions: any[]) => void; // Type more specifically if possible
+  onSessionSaved: (sessions: PracticeSessionType[]) => void;
 }
 
-export default function PracticeSession({ selectedScale, selectedKey, selectedOctaves, onSessionSaved }: PracticeSessionProps) {
-  const [duration, setDuration] = useState<number>(15); // Default to 15 minutes
+const PracticeSession: React.FC<PracticeSessionProps> = ({ selectedScale, selectedKey, selectedOctaves, onSessionSaved }) => {
+  const [duration, setDuration] = useState<number>(15);
   const [customDuration, setCustomDuration] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [isCustomDuration, setIsCustomDuration] = useState<boolean>(false);
 
-  // Generate default description when props change
   useEffect(() => {
     setDescription(generateDefaultDescription(selectedScale, selectedKey, selectedOctaves));
   }, [selectedScale, selectedKey, selectedOctaves]);
@@ -58,55 +57,32 @@ export default function PracticeSession({ selectedScale, selectedKey, selectedOc
         <p className="text-sm text-gray-600 dark:text-gray-300">
           Currently practicing: <span className="font-medium">{selectedKey} {selectedScale}</span>
           <br />
-          Range: <span className="font-medium">{selectedOctaves} octaves</span>
+          Octaves: <span className="font-medium">{selectedOctaves}</span>
         </p>
       </div>
 
-      {/* Duration Selection */}
+      {/* Duration */}
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Duration (minutes)
         </label>
-        {!isCustomDuration ? (
-          <div className="flex flex-wrap gap-2 mb-2">
-            {defaultDurations.map((d) => (
-              <button
-                key={d}
-                onClick={() => setDuration(d)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  duration === d
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                }`}
-              >
-                {d} min
-              </button>
-            ))}
-            <button
-              onClick={() => setIsCustomDuration(true)}
-              className="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-            >
-              Custom
-            </button>
-          </div>
-        ) : (
-          <div className="flex gap-2 items-center">
+        <input
+          type="number"
+          value={isCustomDuration ? customDuration : duration}
+          onChange={(e) => isCustomDuration ? setCustomDuration(e.target.value) : setDuration(parseInt(e.target.value, 10))}
+          className="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+        <div className="mt-2">
+          <label className="inline-flex items-center">
             <input
-              type="number"
-              value={customDuration}
-              onChange={(e) => setCustomDuration(e.target.value)}
-              min="1"
-              className="block w-24 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Minutes"
+              type="checkbox"
+              checked={isCustomDuration}
+              onChange={(e) => setIsCustomDuration(e.target.checked)}
+              className="form-checkbox"
             />
-            <button
-              onClick={() => setIsCustomDuration(false)}
-              className="text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
-            >
-              Cancel
-            </button>
-          </div>
-        )}
+            <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">Custom Duration</span>
+          </label>
+        </div>
       </div>
 
       {/* Description */}
@@ -133,4 +109,6 @@ export default function PracticeSession({ selectedScale, selectedKey, selectedOc
       </button>
     </div>
   );
-}
+};
+
+export default PracticeSession;
