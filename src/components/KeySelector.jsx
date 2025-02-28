@@ -3,12 +3,7 @@
 import React from 'react';
 import { keySignatures } from '../data/scales';
 
-interface KeySelectorProps {
-  selectedKey: string;
-  onKeyChange: (key: string) => void;
-}
-
-export default function KeySelector({ selectedKey, onKeyChange }: KeySelectorProps) {
+export default function KeySelector({ selectedKey, onKeyChange }) {
   return (
     <div className="mb-4">
       <label htmlFor="key-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

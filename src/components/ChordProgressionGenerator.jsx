@@ -1,30 +1,23 @@
 import React, { useState } from 'react';
 import KeySelector from './KeySelector';
 
-interface ChordProgressions {
-  'ii-V-I': { major: string[]; minor: string[] };
-  'blues': { major: string[]; minor: string[] };
-  'rhythm-changes': { major: string[]; minor: string[] };
-  'autumn-leaves': { major: string[]; minor: string[] };
-}
+const ChordProgressionGenerator = () => {
+  const [selectedKey, setSelectedKey] = useState('C');
+  const [keyType, setKeyType] = useState('major');
+  const [progressionType, setProgressionType] = useState('ii-V-I');
+  const [chordProgression, setChordProgression] = useState([]);
+  const [tempo, setTempo] = useState(120);
 
-const ChordProgressionGenerator: React.FC = () => {
-  const [selectedKey, setSelectedKey] = useState<string>('C');
-  const [keyType, setKeyType] = useState<'major' | 'minor'>('major');
-  const [progressionType, setProgressionType] = useState<keyof ChordProgressions>('ii-V-I');
-  const [chordProgression, setChordProgression] = useState<string[]>([]);
-  const [tempo, setTempo] = useState<number>(120);
-
-  const handleKeyChange = (key: string) => {
+  const handleKeyChange = (key) => {
     setSelectedKey(key);
   };
 
-  const handleProgressionTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setProgressionType(event.target.value as keyof ChordProgressions);
+  const handleProgressionTypeChange = (event) => {
+    setProgressionType(event.target.value);
     handleGenerateProgression();
   };
 
-  const handleTempoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTempoChange = (event) => {
     setTempo(Number(event.target.value));
   };
 
@@ -33,7 +26,7 @@ const ChordProgressionGenerator: React.FC = () => {
     setChordProgression(chords);
   };
 
-  const chordProgressions: ChordProgressions = {
+  const chordProgressions = {
     'ii-V-I': {
       major: ['Dm7', 'G7', 'CMaj7'],
       minor: ['Dm7b5', 'G7', 'Cm7'],
@@ -52,7 +45,7 @@ const ChordProgressionGenerator: React.FC = () => {
     },
   };
 
-  const generateChordProgression = (key: string, keyType: 'major' | 'minor', progressionType: keyof ChordProgressions) => {
+  const generateChordProgression = (key, keyType, progressionType) => {
     const romanToChord = {
       'i': 'm',
       'ii': 'm',

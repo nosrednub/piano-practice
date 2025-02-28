@@ -13,19 +13,8 @@ export const defaultDescriptions = {
   wholeTone: "Whole tone scale in harmonic contexts"
 };
 
-export interface PracticeSession {
-  id: string;
-  scale: string;
-  key: string;
-  octaves: number;
-  duration: number;
-  description: string;
-  date: string;
-  createdAt: string;
-}
-
 // Helper function to generate a default description
-export function generateDefaultDescription(scale: string, key: string, octaves: number): string {
+export function generateDefaultDescription(scale, key, octaves) {
   return `Practice ${scale} scale in ${key} key through ${octaves} octaves.`;
 }
 
@@ -33,24 +22,15 @@ export function generateDefaultDescription(scale: string, key: string, octaves: 
 export const STORAGE_KEY = 'jazz-practice-sessions';
 
 // Helper functions for local storage
-export function getSessions(): PracticeSession[] {
+export function getSessions() {
   if (typeof window === 'undefined') return [];
   const sessions = localStorage.getItem(STORAGE_KEY);
   return sessions ? JSON.parse(sessions) : [];
 }
 
-interface NewPracticeSessionInput {
-  scale: string;
-  key: string;
-  octaves: number;
-  duration: number;
-  description: string;
-  date: string;
-}
-
-export function saveSession(session: NewPracticeSessionInput): PracticeSession[] {
+export function saveSession(session) {
   const sessions = getSessions();
-  const newSession: PracticeSession = {
+  const newSession = {
     id: Date.now().toString(),
     createdAt: new Date().toISOString(),
     ...session
@@ -60,12 +40,12 @@ export function saveSession(session: NewPracticeSessionInput): PracticeSession[]
   return sessions;
 }
 
-export function updateSession(sessionId: string, updatedData: Partial<PracticeSession>): PracticeSession[] {
+export function updateSession(sessionId, updatedData) {
   const sessions = getSessions();
   const index = sessions.findIndex(s => s.id === sessionId);
   if (index !== -1) {
-    const sessionToUpdate = sessions[index]!; // Non-null assertion here
-    const updatedSession: PracticeSession = {
+    const sessionToUpdate = sessions[index]; // Non-null assertion here
+    const updatedSession = {
       id: sessionToUpdate.id, // Keep the existing ID
       scale: updatedData.scale !== undefined ? updatedData.scale : sessionToUpdate.scale,
       key: updatedData.key !== undefined ? updatedData.key : sessionToUpdate.key,
@@ -81,7 +61,7 @@ export function updateSession(sessionId: string, updatedData: Partial<PracticeSe
   return sessions;
 }
 
-export function deleteSession(sessionId: string): PracticeSession[] {
+export function deleteSession(sessionId) {
   const sessions = getSessions().filter(s => s.id !== sessionId);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
   return sessions;

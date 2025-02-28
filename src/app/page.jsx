@@ -13,12 +13,12 @@ import { getSessions } from '../data/practiceSessions';
 
 export default function Home() {
   // Initialize with default values
-  const [selectedScale, setSelectedScale] = useState<string>('major');
-  const [selectedKey, setSelectedKey] = useState<string>('C');
-  const [selectedOctaves, setSelectedOctaves] = useState<number>(4);
-  const [sessions, setSessions] = useState<any[]>([]); // Type sessions as any[] for now
+  const [selectedScale, setSelectedScale] = useState('major');
+  const [selectedKey, setSelectedKey] = useState('C');
+  const [selectedOctaves, setSelectedOctaves] = useState(4);
+  const [sessions, setSessions] = useState([]); // Type sessions as any[] for now
   const [isLoaded, setIsLoaded] = useState(false);
-  const [activeTab, setActiveTab] = useState<'scales' | 'chords'>('scales'); // State for active tab
+  const [activeTab, setActiveTab] = useState('scales'); // State for active tab
 
   // Load preferences once on mount
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Home() {
     const savedOctaves = localStorage.getItem('selectedOctaves');
     const savedSessions = getSessions();
     
-    let updates: any = {};
+    let updates = {};
     if (savedScale) updates.scale = savedScale;
     if (savedKey) updates.key = savedKey;
     if (savedOctaves) updates.octaves = Number(savedOctaves);
@@ -41,26 +41,26 @@ export default function Home() {
   }, []);
 
   // Event handlers
-  const handleScaleChange = (scale: string) => {
+  const handleScaleChange = (scale) => {
     setSelectedScale(scale);
     localStorage.setItem('selectedScale', scale);
   };
 
-  const handleKeyChange = (key: string) => {
+  const handleKeyChange = (key) => {
     setSelectedKey(key);
     localStorage.setItem('selectedKey', key);
   };
 
-  const handleOctavesChange = (octaves: number) => {
+  const handleOctavesChange = (octaves) => {
     setSelectedOctaves(octaves);
     localStorage.setItem('selectedOctaves', octaves.toString());
   };
 
-  const handleSessionsUpdate = (updatedSessions: any[]) => { // Type updatedSessions as any[] for now
+  const handleSessionsUpdate = (updatedSessions) => { // Type updatedSessions as any[] for now
     setSessions(updatedSessions);
   };
 
-  const handleTabChange = (tab: 'scales' | 'chords') => {
+  const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 

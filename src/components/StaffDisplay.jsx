@@ -1,19 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { Factory, Voice, StaveNote } from 'vexflow';
-import { jazzScales } from '@/data/scales';
+import { Factory, StaveNote } from 'vexflow';
 
-interface StaffDisplayProps {
-  selectedScale: string;
-  selectedKey: string;
-  selectedOctaves: number;
-}
-
-const StaffDisplay: React.FC<StaffDisplayProps> = ({ 
-  selectedScale, 
-  selectedKey, 
-  selectedOctaves 
-}) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+// Remove interface and type annotations
+const StaffDisplay = ({ selectedScale, selectedKey, selectedOctaves }) => {
+  const containerRef = useRef(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -63,7 +53,6 @@ const StaffDisplay: React.FC<StaffDisplayProps> = ({
       }).addClef('treble')
         .addTimeSignature('4/4')
         .addKeySignature(selectedKey);
-  
       // Draw everything
       vf.draw();
     } catch (error) {
@@ -112,7 +101,7 @@ const SCALE_PATTERNS = {
   'wholeTone': [0, 2, 4, 6, 8, 10]
 };
 // Update the generateScaleNotes function with better debugging
-function generateScaleNotes(key: string, scale: string, octaves: number) {
+function generateScaleNotes(key, scale, octaves) {
   try {
     const notes = [];
     const baseNotes = NOTE_MAP[key];

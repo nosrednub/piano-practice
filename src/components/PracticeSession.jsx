@@ -1,20 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { saveSession, generateDefaultDescription, PracticeSession as PracticeSessionType } from '../data/practiceSessions';
+import { saveSession, generateDefaultDescription } from '../data/practiceSessions';
 
-interface PracticeSessionProps {
-  selectedScale: string;
-  selectedKey: string;
-  selectedOctaves: number;
-  onSessionSaved: (sessions: PracticeSessionType[]) => void;
-}
-
-const PracticeSession: React.FC<PracticeSessionProps> = ({ selectedScale, selectedKey, selectedOctaves, onSessionSaved }) => {
-  const [duration, setDuration] = useState<number>(15);
-  const [customDuration, setCustomDuration] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [isCustomDuration, setIsCustomDuration] = useState<boolean>(false);
+const PracticeSession = ({ selectedScale, selectedKey, selectedOctaves, onSessionSaved }) => {
+  const [duration, setDuration] = useState(15);
+  const [customDuration, setCustomDuration] = useState('');
+  const [description, setDescription] = useState('');
+  const [isCustomDuration, setIsCustomDuration] = useState(false);
 
   useEffect(() => {
     setDescription(generateDefaultDescription(selectedScale, selectedKey, selectedOctaves));

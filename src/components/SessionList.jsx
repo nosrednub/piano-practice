@@ -1,18 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { updateSession, deleteSession, PracticeSession as PracticeSessionType } from '../data/practiceSessions'; // Import PracticeSession type
+import { updateSession, deleteSession } from '../data/practiceSessions';
 
-interface SessionListProps {
-  sessions: PracticeSessionType[];
-  onSessionsUpdate: (sessions: PracticeSessionType[]) => void;
-}
+const SessionList = ({ sessions, onSessionsUpdate }) => {
+  const [editingSession, setEditingSession] = useState(null);
+  const [editDescription, setEditDescription] = useState('');
 
-const SessionList: React.FC<SessionListProps> = ({ sessions, onSessionsUpdate }) => {
-  const [editingSession, setEditingSession] = useState<PracticeSessionType | null>(null);
-  const [editDescription, setEditDescription] = useState<string>('');
-
-  const handleEdit = (session: PracticeSessionType) => {
+  const handleEdit = (session) => {
     setEditingSession(session);
     setEditDescription(session.description);
   };
@@ -25,12 +20,12 @@ const SessionList: React.FC<SessionListProps> = ({ sessions, onSessionsUpdate })
     }
   };
 
-  const handleDelete = (sessionId: string) => {
+  const handleDelete = (sessionId) => {
     const updatedSessions = deleteSession(sessionId);
     onSessionsUpdate(updatedSessions);
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   };

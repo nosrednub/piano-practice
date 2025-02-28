@@ -1,16 +1,14 @@
 "use client";
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import MidiService, { MidiInput, MidiMessage } from '../services/MidiService';
+import PropTypes from 'prop-types';
+import MidiService from '../services/MidiService';
 
-interface MidiInputHandlerProps {
-  children: (props: { detectedNotes: string[] }) => React.ReactNode;
-}
-
-const MidiInputHandler: React.FC<MidiInputHandlerProps> = ({ children }) => {
-  const [midiService, setMidiService] = useState<MidiService | null>(null);
-  const [midiInputs, setMidiInputs] = useState<MidiInput[]>([]);
-  const [selectedInputId, setSelectedInputId] = useState<string>('');
-  const [detectedNotes, setDetectedNotes] = useState<string[]>([]);
+const MidiInputHandler = ({ children }) => {
+  const [midiService, setMidiService] = useState(null);
+  const [midiInputs, setMidiInputs] = useState([]);
+  const [selectedInputId, setSelectedInputId] = useState('');
+  const [detectedNotes, setDetectedNotes] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const initializeMidi = async () => {
@@ -22,11 +20,12 @@ const MidiInputHandler: React.FC<MidiInputHandlerProps> = ({ children }) => {
           const inputs = service.getMidiInputs();
           setMidiInputs(inputs);
           if (inputs.length > 0) {
-            setSelectedInputId(inputs[0].id); // Select the first input by default
+            setSelectedInputId(inputs[0].id);
           }
         }
       } catch (error) {
         console.error('Failed to initialize MIDI:', error);
+        setError('Failed to initialize MIDI device');
       }
     };
 
@@ -41,20 +40,20 @@ const MidiInputHandler: React.FC<MidiInputHandlerProps> = ({ children }) => {
         midiService.stopListening();
       };
     }
-  }, [midiService, selectedInputId]);
+  }, [midiService, selectedInputId, handleMidiMessage]);
 
-  const handleMidiMessage = useCallback((message: MidiMessage) => {
+  const handleMidiMessage = useCallback((message) => {
     if (message.type === 'noteon') {
       setDetectedNotes((prevNotes) => {
         const newNotes = [...prevNotes, message.note];
-        return newNotes.slice(-5); // Keep only the last 5 notes for display
+        return newNotes.slice(-5);
       });
     } else if (message.type === 'noteoff') {
       setDetectedNotes((prevNotes) => prevNotes.filter(note => note !== message.note));
     }
-  }, []);
+  }, [setDetectedNotes]);
 
-  const handleInputSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleInputSelect = (event) => {
     setSelectedInputId(event.target.value);
   };
 
@@ -67,6 +66,11 @@ const MidiInputHandler: React.FC<MidiInputHandlerProps> = ({ children }) => {
   return (
     <div>
       <h2>MIDI Input</h2>
+      {error && (
+        <div className="error-message text-red-500">
+          {error}
+        </div>
+      )}
       {midiInputs.length > 0 ? (
         <div>
           <label htmlFor="midiInput">Select MIDI Input:</label>
@@ -85,9 +89,18 @@ const MidiInputHandler: React.FC<MidiInputHandlerProps> = ({ children }) => {
           ))}
         </ul>
       </div>
-      {children({ detectedNotes })}
+      {React.Children.map(children, child => {
+        return React.cloneElement(child, { detectedNotes });
+      })}
     </div>
   );
+};
+
+MidiInputHandler.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]).isRequired
 };
 
 export default MidiInputHandler;
