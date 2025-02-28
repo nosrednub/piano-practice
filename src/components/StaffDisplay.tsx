@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Factory, Voice, StaveNote } from 'vexflow';
+import { jazzScales } from '@/data/scales';
 
 interface StaffDisplayProps {
   selectedScale: string;
@@ -112,64 +113,61 @@ const SCALE_PATTERNS = {
 };
 // Update the generateScaleNotes function with better debugging
 function generateScaleNotes(key: string, scale: string, octaves: number) {
-  console.group('generateScaleNotes Debug');
   try {
-    // Validate inputs
-    console.log('Input validation:', {
-      key: `${key} (${typeof key})`,
-      scale: `${scale} (${typeof scale})`,
-      octaves: `${octaves} (${typeof octaves})`
-    });
-
-    // Check if key exists
-    if (!NOTE_MAP[key]) {
-      throw new Error(`Invalid key: ${key}. Available keys: ${Object.keys(NOTE_MAP).join(', ')}`);
-    }
-
-    // Check if scale exists
-    if (!SCALE_PATTERNS[scale]) {
-      throw new Error(`Invalid scale: ${scale}. Available scales: ${Object.keys(SCALE_PATTERNS).join(', ')}`);
-    }
-
-    // Check octaves
-    if (octaves < 1 || octaves > 8) {
-      throw new Error(`Invalid octave count: ${octaves}. Must be between 1 and 8`);
-    }
-
     const notes = [];
     const baseNotes = NOTE_MAP[key];
+    const scalePattern = SCALE_PATTERNS[scale];
     const startOctave = 4;
-
-    console.log('Using base notes:', baseNotes);
-    console.log('Starting octave:', startOctave);
+    
+    console.log('Generating scale with:', {
+      key,
+      scale,
+      baseNotes,
+      scalePattern
+    });
 
     for (let octave = 0; octave < octaves; octave++) {
       const currentOctave = startOctave + octave;
-      console.log(`Processing octave ${currentOctave}`);
-
-      baseNotes.forEach((note, index) => {
-        const noteKey = `${note}/${currentOctave}`;
+      
+      // Map intervals directly to scale degrees
+      const degreeMap = {
+        0: 0,  // root
+        2: 1,  // second
+        3: 2,  // minor third
+        4: 2,  // major third
+        5: 3,  // fourth
+        6: 3,  // tritone
+        7: 4,  // fifth
+        8: 5,  // minor sixth
+        9: 5,  // major sixth
+        10: 6, // minor seventh
+        11: 6  // major seventh
+      };
+      
+      scalePattern.forEach((interval) => {
+        const noteIndex = degreeMap[interval];
+        const octaveOffset = Math.floor(interval / 12);
+        const note = baseNotes[noteIndex];
+        const noteOctave = currentOctave + octaveOffset;
+        const noteKey = `${note}/${noteOctave}`;
+        
         try {
           const staveNote = new StaveNote({
             keys: [noteKey],
             duration: 'q'
           });
           notes.push(staveNote);
-          console.log(`✓ Created note: ${noteKey}`);
+          console.log(`Created note: ${noteKey} (scale degree: ${noteIndex + 1})`);
         } catch (noteError) {
-          console.error(`✗ Failed to create note ${noteKey}:`, noteError);
+          console.error(`Failed to create note ${noteKey}:`, noteError);
         }
       });
     }
 
-    console.log(`Successfully generated ${notes.length} notes`);
     return notes;
-
   } catch (error) {
     console.error('Fatal error in generateScaleNotes:', error);
     return [];
-  } finally {
-    console.groupEnd();
   }
 }
 
